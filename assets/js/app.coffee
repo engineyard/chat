@@ -34,9 +34,7 @@ chat = {
     list.html('')
     for index, name of names
       rowHtml = $("<li><i class='icon-user'></i><span class='name'></span></li>")
-      if this.isMe(name)
-        name = "#{name} (you!)"
-      rowHtml.find('.name').html(name)
+      rowHtml.find('.name').html(' '+name)
       list.append rowHtml
 
   message: (msg) ->
