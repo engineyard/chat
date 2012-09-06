@@ -21,7 +21,7 @@ var Chat = {
     var id = connection.id;
 
     ChatTracker.nextGuestName(function(err, guestName){
-      console.log(guestName);
+      console.log(process.pid, "New chatter", id, guestName);
       var newChatter = {
         connection: connection,
         name: guestName,
@@ -36,7 +36,6 @@ var Chat = {
 
   refreshChatters: function() {
     ChatTracker.all(function(err, allChatters){
-      console.log(allChatters);
       var chatterNames = [];
       for(var id in allChatters) {
         chatterNames.push(allChatters[id]);
@@ -99,7 +98,7 @@ var ClientServices = {
   broadcast: function(payload) {
     var connections = Chat.clientConnections;
     var broadcaster = function() {
-      console.log(payload)
+      console.log(process.pid, "Broadcasting to connected clients", payload)
       for(var id in connections) {
         connections[id].connection.write(payload);
       }
@@ -120,7 +119,6 @@ var ClientServices = {
 var CrossServer = {
 
   enqueue: function(data){
-    console.log("Enqueuing", data);
     var payload = JSON.stringify(data);
     publisher.publish("chat", payload);
   },
@@ -128,7 +126,6 @@ var CrossServer = {
   listen: function(){
     subscriber.subscribe("chat")
     subscriber.on('message', function(channel, payload){
-      console.log("Receiving", channel, payload);
       ClientServices.broadcast(payload);
     });
   }

@@ -89,3 +89,8 @@ $ ->
     $messageField.focus()
     chat.sendMessage(msg)
     false
+
+  $messageField.on 'keydown', (event) ->
+    if event.keyCode == 13
+      $message.submit()
+      false
