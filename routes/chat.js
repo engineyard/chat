@@ -3,72 +3,136 @@
  * chat websocket application
  */
 
-var chat = exports;
+var redisLib = require('redis'),
+  publisher = redisLib.createClient(),
+  subscriber = redisLib.createClient(),
+  redis = redisLib.createClient()
 
+var Chat = {
 
+  clientConnections: {},
 
-var chatters = {}; // keyed by connection id
+  create: function(){
+    CrossServer.listen();
+    return this;
+  },
 
-var last_guest_id = 0;
+  addChatter: function(connection) {
+    var id = connection.id;
 
-var broadcast = function(message) {
-  var broadcaster = function() {
-    console.log(message)
-    var payload = JSON.stringify(message);
-    for(var id in chatters) {
-      chatters[id].connection.write(payload);
+    ChatTracker.nextGuestName(function(err, guestName){
+      console.log(guestName);
+      var newChatter = {
+        connection: connection,
+        name: guestName,
+        send: function(msg) { ClientServices.send(connection, msg); },
+      };
+      Chat.clientConnections[id] = newChatter;
+      ChatTracker.add(id, newChatter.name);
+      newChatter.send({username: newChatter.name});
+      Chat.refreshChatters();
+    })
+  },
+
+  refreshChatters: function() {
+    ChatTracker.all(function(err, allChatters){
+      console.log(allChatters);
+      var chatterNames = [];
+      for(var id in allChatters) {
+        chatterNames.push(allChatters[id]);
+      }
+
+      CrossServer.enqueue({chatters: chatterNames});
+    });
+  },
+
+  receiveMessage: function(id, message) {
+    if(typeof Chat.clientConnections[id] === 'undefined') { return; }
+    var msg = JSON.parse(message);
+    var username = null;
+    if(msg.username != null) {
+      username = msg.username;
+      Chat.clientConnections[id].name = username;
+      Chat.clientConnections[id].send({username: username});
+      ChatTracker.add(id, username);
+      Chat.refreshChatters();
+    } else {
+      username = Chat.clientConnections[id].name;
     }
-  }
-  process.nextTick(broadcaster);
-}
+    if(msg.message != null) {
+      CrossServer.enqueue({message: {username: username, content: msg.message}})
+    }
+  },
 
-var send = function(connection, message) {
-  var sender = function() {
-    var payload = JSON.stringify(message);
-    connection.write(payload)
-  };
-  process.nextTick(sender);
-}
-
-chat.add_chatter = function(connection) {
-  var new_chatter = {
-    name: 'Guest ' + last_guest_id++,
-    connection: connection,
-    send: function(msg) { send(this.connection, msg); },
-  };
-  chatters[connection.id] = new_chatter;
-  new_chatter.send({username: new_chatter.name});
-  chat.refresh_chatters();
-}
-
-
-chat.refresh_chatters = function() {
-  var chatter_names = []
-  for(var id in chatters) {
-    chatter_names.push(chatters[id].name);
+  removeChatter: function(id) {
+    delete Chat.clientConnections[id];
+    ChatTracker.remove(id);
+    Chat.refreshChatters();
   }
 
-  broadcast({chatters: chatter_names});
-}
+};
 
-chat.receive_message = function(id, message) {
-  if(typeof chatters[id] === 'undefined') { return; }
-  var msg = JSON.parse(message);
-  var username = null;
-  if(msg.username != null) {
-    username = msg.username;
-    chatters[id].name = username;
-    chatters[id].send({username: username});
-    chat.refresh_chatters();
-  } else {
-    username = chatters[id].name;
-  }
-  if(msg.message != null) {
-    broadcast({message: {username: username, content: msg.message}})
-  }
-}
+var ChatTracker = {
 
-chat.remove_chatter = function(id) {
-  delete chatters[id];
-  chat.refresh_chatters();
-}
+  add: function(id, name){
+    redis.hset('chatters', id, name);
+  },
+
+  remove: function(id){
+    redis.hdel('chatters', id)
+  },
+
+  all: function(callback){
+    redis.hgetall('chatters', callback);
+  },
+
+  nextGuestName: function(callback){
+    redis.incr("chatter-count", function(err, nextGuestId){
+      callback(err, "Guest " + nextGuestId);
+    });
+  }
+
+};
+
+var ClientServices = {
+
+  broadcast: function(payload) {
+    var connections = Chat.clientConnections;
+    var broadcaster = function() {
+      console.log(payload)
+      for(var id in connections) {
+        connections[id].connection.write(payload);
+      }
+    }
+    process.nextTick(broadcaster);
+  },
+
+  send: function(connection, message) {
+    var sender = function() {
+      var payload = JSON.stringify(message);
+      connection.write(payload)
+    };
+    process.nextTick(sender);
+  }
+
+};
+
+var CrossServer = {
+
+  enqueue: function(data){
+    console.log("Enqueuing", data);
+    var payload = JSON.stringify(data);
+    publisher.publish("chat", payload);
+  },
+
+  listen: function(){
+    subscriber.subscribe("chat")
+    subscriber.on('message', function(channel, payload){
+      console.log("Receiving", channel, payload);
+      ClientServices.broadcast(payload);
+    });
+  }
+
+};
+
+module.exports = Chat;

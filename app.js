@@ -39,24 +39,22 @@ app.configure('production', function(){
 
 var sockjs = require('sockjs');
 var sockjs_opts = {sockjs_url: "http://cdn.sockjs.org/sockjs-0.3.min.js"};
-var sockjs_echo = sockjs.createServer(sockjs_opts);
-var chat = require('./routes/chat');
-console.log(chat);
+var sockjs_chat = sockjs.createServer(sockjs_opts);
+var chat = require('./routes/chat').create();
 
-connections = {};
-sockjs_echo.on('connection', function(conn) {
-  chat.add_chatter(conn);
+sockjs_chat.on('connection', function(conn) {
+  chat.addChatter(conn);
   conn.on('close', function() {
-    chat.remove_chatter(conn.id);
+    chat.removeChatter(conn.id);
   });
   conn.on('data', function(message) {
-    chat.receive_message(conn.id, message);
+    chat.receiveMessage(conn.id, message);
   })
 });
 
 // Routes
 
-sockjs_echo.installHandlers(app, {prefix: '/echo'});
+sockjs_chat.installHandlers(app, {prefix: '/echo'});
 
 app.get('/', routes.index);
 

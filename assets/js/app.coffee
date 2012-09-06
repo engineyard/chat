@@ -22,7 +22,6 @@ sock.onmessage = (e) ->
   if data.username
     chat.username(data.username)
 
-
 sock.onclose = ->
   console.log("close");
 
