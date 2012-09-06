@@ -34,14 +34,15 @@ chat = {
     list = $('#chatmembers-list')
     list.html('')
     for index, name of names
+      rowHtml = $("<li><i class='icon-user'></i><span class='name'></span></li>")
       if this.isMe(name)
-        list.append $("<li><i class='icon-user'></i> #{name} (you!)</li>")
-      else
-        list.append $("<li><i class='icon-user'></i> #{name}</li>")
+        name = "#{name} (you!)"
+      rowHtml.find('.name').text(name)
+      list.append rowHtml
 
   message: (msg) ->
-    user = $("<div class='span2 name'>#{msg.username}</div>")
-    text = $("<div class='span5 chat-text'>#{msg.content}</div>")
+    user = $("<div class='span2 name'></div>").text(msg.username)
+    text = $("<div class='span5 chat-text'></div>").text(msg.content)
     row = $("<div class='row'></div>")
     row.addClass('highlight') if this.isMe msg.username
     row.append(user)
