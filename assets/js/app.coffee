@@ -36,12 +36,12 @@ chat = {
       rowHtml = $("<li><i class='icon-user'></i><span class='name'></span></li>")
       if this.isMe(name)
         name = "#{name} (you!)"
-      rowHtml.find('.name').text(name)
+      rowHtml.find('.name').html(name)
       list.append rowHtml
 
   message: (msg) ->
-    user = $("<div class='span2 name'></div>").text(msg.username)
-    text = $("<div class='span5 chat-text'></div>").text(msg.content)
+    user = $("<div class='span2 name'></div>").html(msg.username)
+    text = $("<div class='span5 chat-text'></div>").html(msg.content)
     row = $("<div class='row'></div>")
     row.addClass('highlight') if this.isMe msg.username
     row.append(user)
@@ -91,6 +91,6 @@ $ ->
     false
 
   $messageField.on 'keydown', (event) ->
-    if event.keyCode == 13
+    if event.keyCode == 13 && not event.ctrlKey
       $message.submit()
       false

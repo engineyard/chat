@@ -6,7 +6,8 @@
 var redisLib = require('redis'),
   publisher = redisLib.createClient(),
   subscriber = redisLib.createClient(),
-  redis = redisLib.createClient()
+  redis = redisLib.createClient(),
+  sanitizer = require('sanitizer');
 
 var Chat = {
 
@@ -47,19 +48,24 @@ var Chat = {
 
   receiveMessage: function(id, message) {
     if(typeof Chat.clientConnections[id] === 'undefined') { return; }
-    var msg = JSON.parse(message);
-    var username = null;
+    var msg = JSON.parse(message),
+      cleanUsername = null,
+      cleanMessage = null;
+
     if(msg.username != null) {
-      username = msg.username;
-      Chat.clientConnections[id].name = username;
-      Chat.clientConnections[id].send({username: username});
-      ChatTracker.add(id, username);
+      cleanUsername = sanitizer.escape(msg.username);
+
+      Chat.clientConnections[id].name = cleanUsername;
+      Chat.clientConnections[id].send({username: cleanUsername});
+      ChatTracker.add(id, cleanUsername);
       Chat.refreshChatters();
     } else {
-      username = Chat.clientConnections[id].name;
+      cleanUsername = Chat.clientConnections[id].name;
     }
+
     if(msg.message != null) {
-      CrossServer.enqueue({message: {username: username, content: msg.message}})
+      cleanMessage = sanitizer.escape(msg.message);
+      CrossServer.enqueue({message: {username: cleanUsername, content: cleanMessage}})
     }
   },
 
