@@ -1,0 +1,62 @@
+!!! 5
+
+head
+  meta(charset="utf-8")
+  meta(http-equiv="X-UA-Compatible",content="IE=edge,chrome=1")
+
+  title
+    = title
+    | &mdash; Engine Yard sample app
+
+  script(src="//cdn.sockjs.org/sockjs-0.3.min.js")
+  != css('style')
+  != js('app')
+
+body
+
+  .wrapper
+
+    #header
+      .container
+        .row
+          .span8
+            h1
+              img(src="img/chat_56.png")
+              |  Chat
+              small
+                |  a sample Node.js app
+          .span4.navigation
+            a(href='http://cloud.engineyard.com/').btn.btn-light
+              i.icon-home
+              |  Engine Yard Dashboard
+
+    #content
+      .container
+        != body
+
+    .push
+
+  #footer
+    .container
+      .row
+        .span1
+          .pull-right
+            .logo
+              a(href='http://www.engineyard.com/')
+                img(src='img/engine-yard-logo.png')
+        .span7
+          h4
+            | This is a sample Node.js real-time chat application running on Engine Yard Cloud
+          p.footernav
+            a(href='#')
+              i.icon-book
+              |  Deploying Node.js Apps on Engine Yard
+            a(href='#')
+              i.icon-question-sign
+              |  Enging Yard's Node.js Stack
+          p
+            | Source code happily shared on GitHub, and made with lots of
+            a(href='http://www.engineyard.com/')
+              | Twitter Bootstrap
+            |  love.
+

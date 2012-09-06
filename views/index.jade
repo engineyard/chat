@@ -1,0 +1,49 @@
+.row
+  .span8.chatwindow
+    .fade-to-white
+    .chat-transcript-wrapper
+      section.chat-transcript#chatbox
+        .row
+          .span2.name
+            | EY Bot
+          .span5.chat-text
+            | Fixie seitan occupy, messenger bag helvetica gluten-free polaroid cliche cosby sweater sartorial shoreditch quinoa.
+
+    section.chat-entry
+      .row
+        .span2.prompt
+          .pull-right
+            img(src="img/chat-plus.png")
+        .span5
+          form#message-box
+            textarea.new-chat
+            button.btn.pull-right(type="submit")
+              | Post Message
+
+  .span4.chatmembers
+    h4 Members
+
+    ul.nav.nav-pills.nav-stacked#chatmembers-list
+      li
+        i.icon-user
+        |  EY Bot
+      li
+        i.icon-user
+        |  Guest (you!)
+    a(href='#').btn.btn-light
+      i.icon-plus-sign
+      |  Add Member
+
+#sign-in-modal.modal.hide
+  .modal-header
+    button(type="button", data-dismiss="modal").close
+      x
+    h3
+      | Enter a display name to start
+  .modal-body
+    form#username-form
+      label
+        input#username(placeholder="Display name", required="yes")
+
+      button.btn(type="submit")
+        | Start Chatting

@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+
+# DESCRIPTION: Run tests with locally installed Mocha.
+# AUTHOR: Geoffrey Grosenbach http://peepcode.com
+#
+# USAGE:
+#   Call with no arguments to run all tests. Call with any args to override.
+#
+# EXAMPLE:
+#   ./bin/test # Runs all tests
+#   ./bin/test test/models/*.coffee # Run only model tests
+
+MOCHA_ARGS=""
+if [ -n "$*" ]; then
+  MOCHA_ARGS=test/_setup.js $*
+else
+  MOCHA_ARGS="test/_setup.js test/*.coffee"
+fi
+
+./node_modules/mocha/bin/mocha $MOCHA_ARGS
