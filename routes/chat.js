@@ -32,7 +32,7 @@ var Chat = {
       };
       Chat.clientConnections[id] = newChatter;
       ChatTracker.add(id, newChatter.name);
-      newChatter.send({username: newChatter.name});
+      //newChatter.send({username: newChatter.name});
       Chat.refreshChatters();
     })
   },
@@ -118,7 +118,7 @@ var ChatTracker = {
 
   justSaw: function(id){
     redis.set('seen-' + id, true, function(err, result){
-      redis.expire(id, 600);
+      redis.expire('seend-' + id, 1);
     });
   },
 
@@ -135,6 +135,7 @@ var ClientServices = {
     var broadcaster = function() {
       console.log(process.pid, "Broadcasting to connected clients", payload)
       for(var id in connections) {
+        ChatTracker.justSaw(id);
         connections[id].connection.write(payload);
       }
     }

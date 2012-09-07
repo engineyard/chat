@@ -5,25 +5,30 @@
 #= require vendor/bootstrap
 
 
-window.sock = new SockJS("/chat")
 window.message = (obj) ->
   sock.send JSON.stringify(obj)
 
+connectFailures = 0
+chatConnect = ->
+  window.sock = new SockJS("/chat")
 
-sock.onopen = ->
-  console.log("open");
+  sock.onopen = ->
+    connectFailures = 1
 
-sock.onmessage = (e) ->
-  data = JSON.parse e.data
-  if data.message
-    chat.message(data.message)
-  if data.chatters
-    chat.chatters(data.chatters)
-  if data.username
-    chat.username(data.username)
+  sock.onmessage = (e) ->
+    data = JSON.parse e.data
+    if data.message
+      chat.message(data.message)
+    if data.chatters
+      chat.chatters(data.chatters)
+    if data.username
+      chat.username(data.username)
 
-sock.onclose = ->
-  console.log("close");
+  sock.onclose = ->
+    setTimeout(chatConnect, 1000 * connectFailures)
+    connectFailures += 1
+
+chatConnect()
 
 chat = {
   me: '',
@@ -49,7 +54,7 @@ chat = {
     chatboxWrapper = $('.chat-transcript-wrapper')
 
     chatbox.append(row.fadeIn())
-    chatboxWrapper.animate({ scrollTop: chatboxWrapper.height()}, 1000);
+    chatboxWrapper.animate({ scrollTop: chatbox.height()}, 1000);
 
 
     console.log("#{msg.username} says: #{msg.content}")
@@ -61,7 +66,7 @@ chat = {
     message({username: username})
 
   sendMessage: (msg) ->
-    message({message: msg})
+    message({message: msg, username: chat.me})
 }
 
 $ ->
