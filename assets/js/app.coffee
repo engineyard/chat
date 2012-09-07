@@ -96,3 +96,19 @@ $ ->
     if event.keyCode == 13 && not event.ctrlKey
       $message.submit()
       false
+
+  # chat window sizing because css is an asshole
+  chatsize = ->
+    headerHeight = $('#header').height();
+    footerHeight = $('#footer').height();
+    console.log headerHeight;
+    console.log footerHeight;
+    $('.chatwindow').css('height', ($(window).height() - (headerHeight + footerHeight)) + 'px');
+    chatWindowHeight = $('.chatwindow').height();
+    chatEntryHeight = $('.chat-entry').height();
+    $('.chat-transcript-wrapper').css('height', (chatWindowHeight - chatEntryHeight) + 'px');
+    return
+
+  chatsize()
+  $(window).resize(chatsize)
+  return
