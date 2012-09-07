@@ -32,7 +32,6 @@ var Chat = {
       };
       Chat.clientConnections[id] = newChatter;
       ChatTracker.add(id, newChatter.name);
-      //newChatter.send({username: newChatter.name});
       Chat.refreshChatters();
     })
   },
@@ -76,9 +75,7 @@ var Chat = {
       if(cleanMessage == '') return;
       if(cleanMessage == '/clear'){
         redis.keys('seen-*', function(err, results){
-          redis.del(results, function(err, result){
-            Chat.refreshChatters();
-          })
+          redis.del(results);
         });
         return;
       }
@@ -124,7 +121,6 @@ var ChatTracker = {
 
   isRecent: function(id, callback){
     redis.ttl('seen-' + id, function(err, result) {
-      console.log("result", id, result);
       if(err != null) {
         callback(false);
       } else if(result != null && result > 0) {
