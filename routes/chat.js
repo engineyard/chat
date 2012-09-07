@@ -118,12 +118,21 @@ var ChatTracker = {
 
   justSaw: function(id){
     redis.set('seen-' + id, true, function(err, result){
-      redis.expire('seend-' + id, 1);
+      redis.expire('seen-' + id, 60);
     });
   },
 
   isRecent: function(id, callback){
-    redis.get('seen-' + id, function(err, result) {callback(result)});
+    redis.ttl('seen-' + id, function(err, result) {
+      console.log("result", id, result);
+      if(err != null) {
+        callback(false);
+      } else if(result != null && result > 0) {
+        callback(true);
+      } else {
+        callback(false);
+      }
+    });
   }
 
 };
