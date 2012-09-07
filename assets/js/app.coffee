@@ -42,8 +42,8 @@ chat = {
       list.append rowHtml
 
   message: (msg) ->
-    user = $("<div class='span2 name'></div>").html(msg.username)
-    text = $("<div class='span5 chat-text'></div>").html(msg.content)
+    user = $("<div class='span2 span-mini name'></div>").html(msg.username)
+    text = $("<div class='span5 span-maxi chat-text'></div>").html(msg.content)
     row = $("<div class='row'></div>")
     row.addClass('highlight') if this.isMe msg.username
     row.append(user)

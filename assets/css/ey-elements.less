@@ -1,4 +1,4 @@
-@footer-height: 160px;
+@footer-height: 130px;
 @sky-gradient-color: #d0e9f2;
 
 //- So sticky footer works
@@ -23,7 +23,17 @@ html, body { height: 100%; }
 #header {
   background: transparent;
   height: 100px;
-  .navigation {
+  .logo {
+    margin: 20px auto;
+  }
+  h1 {
+    margin-bottom: 0;
+  }
+  h5 {
+    margin-top: 0;
+  }
+  .title {
+    margin-left: 20px;
     margin-top: 20px;
   }
 }
@@ -53,13 +63,13 @@ html, body { height: 100%; }
   background-color: @blueGrey;
   .prompt {
     img {
-      margin: 12px 0 0;
+      margin: 29px 0 0 76px;
     }
   }
   form {
     margin: 18px 0px 10px 15px;
     textarea {
-      width: 400px;
+      width: 440px;
       min-height: 50px;
     }
   }
@@ -72,17 +82,22 @@ html, body { height: 100%; }
   overflow-x: hidden;
 }
 .chat-transcript {
+  -ms-word-break: break-all;
+  word-break: break-all;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto;
   .row {
     margin: 0;
     padding: 5px 0;
     .name {
-      color: @grayLight;
+      color: @gray;
     }
     .chat-text {
       color: @gray;
     }
     &.highlight {
-      .chat-text {
+      .chat-text, .name {
         color: @blueGrey;
       }
     }
@@ -98,10 +113,20 @@ html, body { height: 100%; }
   .logo {
     margin-top: 16px;
   }
-  .footernav {
-    margin:20px 0;
-    a {
-      margin-right: 20px;
-    }
+  .row.footernav-1 {
+    margin-top: 35px;
   }
+  .row.footernav-2 {
+    margin-top: 10px;
+  }
+}
+
+// Special span width
+.span2.span-mini {
+  width: 100px;
+}
+
+.span5.span-maxi {
+  width: 440px;
+
 }

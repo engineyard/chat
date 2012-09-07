@@ -19,16 +19,17 @@ body
     #header
       .container
         .row
-          .span8
-            h1
-              img(src="img/chat_56.png")
-              |  Yawn, Another Chat Demo
-              small
-                |  Node.js running on Engine Yard Cloud.
-          .span4.navigation
-            a(href='http://cloud.engineyard.com/').btn.btn-light
-              i.icon-home
-              |  Engine Yard Dashboard
+          .span2.span-mini
+            .pull-right
+              .logo
+                img(src='img/chat_56.png')
+          .span10
+            .title
+              h1
+                |  Chat: a Node.js sample
+              h5
+                |  Deployed on Engine Yard Cloud.
+
 
     #content
       .container
@@ -45,18 +46,23 @@ body
               a(href='http://www.engineyard.com/')
                 img(src='img/engine-yard-logo.png')
         .span7
-          h4
-            | This is a sample Node.js real-time chat application running on Engine Yard Cloud
-          p.footernav
-            a(href='#')
-              i.icon-book
-              |  Deploying Node.js Apps on Engine Yard
-            a(href='#')
-              i.icon-question-sign
-              | &nbsp;Engine Yard's Node.js Stack
-          p
-            | Source code happily shared on GitHub, and made with lots of&nbsp;
-            a(href='http://www.engineyard.com/')
-              | Twitter Bootstrap
-            | &nbsp;love.
+          .row.footernav-1
+            .span3
+              a(href='#')
+                i.icon-book
+                | &nbsp;Deploying Node.js on Cloud
+            .span3
+              a(href='#')
+                i.icon-question-sign
+                | &nbsp;Engine Yard's Node.js Stack
+          .row.footernav-2
+            .span3
+              a(href='http://cloud.engineyard.com/')
+                i.icon-home
+                | &nbsp;Cloud Dashboard
+            .span3
+              a(href='http://cloud.engineyard.com/')
+                i.icon-cog
+                | &nbsp;Chat source code
+
 
