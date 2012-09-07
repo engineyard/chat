@@ -3,10 +3,11 @@
  * chat websocket application
  */
 
-var redisLib = require('redis'),
-  publisher = redisLib.createClient(),
-  subscriber = redisLib.createClient(),
-  redis = redisLib.createClient(),
+var redis_host = (process.env.DB_HOST || 'localhost'),
+  redisLib = require('redis'),
+  publisher = redisLib.createClient(null, redis_host),
+  subscriber = redisLib.createClient(null, redis_host),
+  redis = redisLib.createClient(null, redis_host),
   sanitizer = require('sanitizer'),
   async = require('async');
 
@@ -45,7 +46,6 @@ var Chat = {
       }
 
       async.filter(chatterIds, ChatTracker.isRecent, function(seenIds){
-        console.log(allChatters);
         for(var seenIdIndex in seenIds) {
           chatterNames.push(allChatters[seenIds[seenIdIndex]]);
         }
