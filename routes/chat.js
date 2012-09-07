@@ -7,7 +7,8 @@ var redisLib = require('redis'),
   publisher = redisLib.createClient(),
   subscriber = redisLib.createClient(),
   redis = redisLib.createClient(),
-  sanitizer = require('sanitizer');
+  sanitizer = require('sanitizer'),
+  async = require('async');
 
 var Chat = {
 
@@ -37,16 +38,25 @@ var Chat = {
 
   refreshChatters: function() {
     ChatTracker.all(function(err, allChatters){
+      var chatterIds = [];
       var chatterNames = [];
       for(var id in allChatters) {
-        chatterNames.push(allChatters[id]);
+        chatterIds.push(id);
       }
 
-      CrossServer.enqueue({chatters: chatterNames});
+      async.filter(chatterIds, ChatTracker.isRecent, function(seenIds){
+        console.log(allChatters);
+        for(var seenIdIndex in seenIds) {
+          chatterNames.push(allChatters[seenIds[seenIdIndex]]);
+        }
+
+        CrossServer.enqueue({chatters: chatterNames});
+      });
     });
   },
 
   receiveMessage: function(id, message) {
+    ChatTracker.justSaw(id);
     if(typeof Chat.clientConnections[id] === 'undefined') { return; }
     var msg = JSON.parse(message),
       cleanUsername = null,
@@ -54,19 +64,28 @@ var Chat = {
 
     if(msg.username != null) {
       cleanUsername = sanitizer.escape(msg.username);
-
       Chat.clientConnections[id].name = cleanUsername;
       Chat.clientConnections[id].send({username: cleanUsername});
       ChatTracker.add(id, cleanUsername);
-      Chat.refreshChatters();
     } else {
       cleanUsername = Chat.clientConnections[id].name;
     }
 
     if(msg.message != null) {
       cleanMessage = sanitizer.escape(msg.message);
-      CrossServer.enqueue({message: {username: cleanUsername, content: cleanMessage}})
+      if(cleanMessage == '') return;
+      if(cleanMessage == '/clear'){
+        redis.keys('seen-*', function(err, results){
+          redis.del(results, function(err, result){
+            Chat.refreshChatters();
+          })
+        });
+        return;
+      }
+      CrossServer.enqueue({message: {username: cleanUsername, content: cleanMessage}});
     }
+
+    Chat.refreshChatters();
   },
 
   removeChatter: function(id) {
@@ -95,6 +114,16 @@ var ChatTracker = {
     redis.incr("chatter-count", function(err, nextGuestId){
       callback(err, "Guest " + nextGuestId);
     });
+  },
+
+  justSaw: function(id){
+    redis.set('seen-' + id, true, function(err, result){
+      redis.expire(id, 600);
+    });
+  },
+
+  isRecent: function(id, callback){
+    redis.get('seen-' + id, function(err, result) {callback(result)});
   }
 
 };

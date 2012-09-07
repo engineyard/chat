@@ -54,7 +54,7 @@ sockjs_chat.on('connection', function(conn) {
 
 // Routes
 
-sockjs_chat.installHandlers(app, {prefix: '/echo'});
+sockjs_chat.installHandlers(app, {prefix: '/chat'});
 
 app.get('/', routes.index);
 

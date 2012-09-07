@@ -5,7 +5,7 @@
 #= require vendor/bootstrap
 
 
-window.sock = new SockJS("/echo")
+window.sock = new SockJS("/chat")
 window.message = (obj) ->
   sock.send JSON.stringify(obj)
 
@@ -24,7 +24,6 @@ sock.onmessage = (e) ->
 
 sock.onclose = ->
   console.log("close");
-
 
 chat = {
   me: '',
