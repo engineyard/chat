@@ -26,7 +26,8 @@
     "mocha": "1.x.x"
   },
   "scripts": {
-    "start": "./bin/dev-server",
+    "dev": "./bin/dev-server",
+    "start": "node ./app.js",
     "test": "./bin/test"
   }
 }
