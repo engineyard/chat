@@ -4,25 +4,37 @@
  */
 
 var express = require('express')
-  , routes = require('./routes')
+  , app = express.createServer()
   , CookieStore = require('cookie-sessions')
-  , asset = require('connect-assets');
+  , asset = require('connect-assets')
+  , io = require('socket.io').listen(app)
+  , RedisStore = require('socket.io/lib/stores/redis')
+  , redis = require('redis')
+  , redisHost = (process.env.DB_HOST || 'localhost')
+  , pub = redis.createClient()
+  , sub = redis.createClient()
+  , redisClient = redis.createClient()
+  , chat = require('./chat');
 
-var app = module.exports = express.createServer();
-var io = require('socket.io').listen(app);
+io.set('store', new RedisStore({
+  redisPub : pub
+, redisSub : sub
+, redisClient : redisClient
+}));
 
-// Configuration
+module.exports = app
+
+// Configuration of express
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'less');
   app.set('view engine', 'jade');
-  app.set('session-secret', "70b9d42bb72c6048f37118353cdbdd11")
+    app.set('session-secret', "70b9d42bb72c6048f37118353cdbdd11")
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
   app.use(CookieStore({ secret: app.set('session-secret') }));
-  app.use(app.router);
   app.use(express.static(__dirname + '/public'));
   app.use(asset());
 });
@@ -37,26 +49,28 @@ app.configure('production', function(){
 
 // Websockets
 
-var sockjs = require('sockjs');
-var sockjs_opts = {sockjs_url: "http://cdn.sockjs.org/sockjs-0.3.min.js"};
-var sockjs_chat = sockjs.createServer(sockjs_opts);
-var chat = require('./routes/chat').create();
-
-sockjs_chat.on('connection', function(conn) {
-  chat.addChatter(conn);
-  conn.on('close', function() {
-    chat.removeChatter(conn.id);
+io.on('connection', function(socket) {
+  socket.on('connect', function(){
+    // chat.addUser(socket)
   });
-  conn.on('data', function(message) {
-    chat.receiveMessage(conn.id, message);
-  })
+  socket.on('disconnect', function(){
+    chat.removeUser(socket);
+  });
+  socket.on('username', function(name){
+    chat.addUser(io, socket, name);
+  });
+  socket.on('msg', function(name, msg){
+    chat.sendMessage(io, name, msg)
+  });
 });
 
 // Routes
 
-sockjs_chat.installHandlers(app, {prefix: '/chat'});
+app.get('/', function(req, res){
+  res.render('index', { title: 'Node.js Chat' })
+});
 
-app.get('/', routes.index);
+// Bind to port
 
 app.listen((process.env.PORT || 3000), function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
