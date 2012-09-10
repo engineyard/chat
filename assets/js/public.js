@@ -16,7 +16,9 @@ socket.on('msg', function(username, msg){
 });
 
 socket.on('ready', function(){
-  Chat.startChat();
+  if (console) {
+    console.log('connected and logged in');
+  }
 });
 
 var Chat = {
@@ -50,7 +52,7 @@ var Chat = {
     row.hide()
 
     this.$chatbox.append(row.fadeIn());
-    this.$chatboxWrapper.animate({ scrollTop: chatbox.height()}, 1000);
+    this.$chatboxWrapper.animate({ scrollTop: this.$chatbox.height()}, 1000);
   }
 
 , isMe: function(username){
@@ -89,10 +91,6 @@ var Chat = {
     });
 
   }
-, startChat: function(){
-    $signIn.modal('hide');
-    $messageField.focus();
-  }
 
 };
 
@@ -111,6 +109,8 @@ $(function(){
   $signIn.on('submit', function(){
     username = $signInField.val();
     Chat.setUsername(username);
+    $signIn.modal('hide');
+    $messageField.focus();
     return false;
   });
 
@@ -119,6 +119,7 @@ $(function(){
     $messageField.val('');
     $messageField.focus();
     Chat.sendMessage(msg);
+    Chat.receiveMessage(Chat.me, msg);
     return false;
   });
 

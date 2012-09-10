@@ -60,7 +60,7 @@ io.on('connection', function(socket) {
     chat.addUser(io, socket, name);
   });
   socket.on('msg', function(name, msg){
-    chat.sendMessage(io, name, msg)
+    chat.sendMessage(socket, name, msg)
   });
 });
 

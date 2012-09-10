@@ -39,11 +39,11 @@ var Chat = {
     })
   }
 
-, sendMessage: function(io, username, msg){
+, sendMessage: function(socket, username, msg){
     if (isOk(username) && isOk(msg)){
       msg = clean(truncate(msg, 500));
       username = clean(truncate(username, 36));
-      io.sockets.emit('msg', username, msg);
+      socket.broadcast.emit('msg', username, msg);
     }
   }
 
