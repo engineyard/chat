@@ -38,6 +38,8 @@ var Chat = {
 
 , sendMessage: function(msg){
     socket.emit('msg', username, msg);
+
+    $(".orientation").slideUp('fast');
   }
 
 , receiveMessage: function(username, msg){
@@ -141,4 +143,31 @@ $(function(){
 
   chatsize();
   $(window).resize(chatsize)
+
+  $("#share-link").append(document.URL);
+
+  function SelectText(element) {
+      var text = document.getElementById(element);
+      if ($.browser.msie) {
+          var range = document.body.createTextRange();
+          range.moveToElementText(text);
+          range.select();
+      } else if ($.browser.mozilla || $.browser.opera) {
+          var selection = window.getSelection();
+          var range = document.createRange();
+          range.selectNodeContents(text);
+          selection.removeAllRanges();
+          selection.addRange(range);
+      } else if ($.browser.safari) {
+          var selection = window.getSelection();
+          selection.setBaseAndExtent(text, 0, text, 1);
+      }
+  }
+
+  $('#share-link').click(function() {
+      var targetDiv = $(this).toggleClass("selected").attr("rel");
+      if($(this).hasClass("selected")){
+          SelectText(targetDiv);
+      }
+  });
 });

@@ -3,9 +3,7 @@
     .chat-transcript-wrapper
       section.chat-transcript#chatbox
         .row
-          .span2.span-mini.name
-            | EY Bot
-          .span5.span-maxi.chat-text
+          .orientation
             | Welcome to Engine Yard Cloud! This is a live chat application,
             | share a link to it with your co-workers, or open multiple
             | browser tabs to it and chat on your lonesome.
@@ -19,13 +17,12 @@
             textarea.new-chat
 
   .span4.chatmembers
+    p Give people this link to chat with them:
+    #share-link(rel="share-link")
+
     h4 Members
 
     ul.nav.nav-pills.nav-stacked#chatmembers-list
-
-    a(href='#').btn.btn-light
-      i.icon-plus-sign
-      |  Add Member
 
 #sign-in-modal.modal.hide
   .modal-header

@@ -47,6 +47,19 @@ html, body { height: 100%; }
   -webkit-box-shadow:  0px 3px 25px 1px rgba(0, 0, 0, .1);
   box-shadow:  0px 3px 25px 1px rgba(0, 0, 0, .1);
   .border-radius(8px);
+  min-height: 350px;
+}
+
+// Link to invite others to chat
+#share-link {
+  width: auto;
+  max-width: 100%;
+  color: @grayDark;
+  .border-radius(3px);
+  border: none;
+  padding: 4px 17px;
+  margin-bottom: 36px;
+  background-color: @grayLighter;
 }
 
 // List of who is in the chat
@@ -88,10 +101,16 @@ html, body { height: 100%; }
   .row {
     margin: 0;
     padding: 5px 0;
+    .orientation {
+      color: @grayLight;
+      font-size: 14px;
+      padding: 50px 70px;
+      color: @blueGrey;
+    }
     .name {
       -ms-word-break: break-all;
       word-break: break-all;
-      color: @gray;
+      color: lighten(@gray, 20%);
 
     }
     .chat-text {
@@ -99,7 +118,7 @@ html, body { height: 100%; }
     }
     &.highlight {
       .chat-text, .name {
-        color: @blueGrey;
+        color: lighten(@blueGrey, 20%);
       }
     }
   }
@@ -129,5 +148,6 @@ html, body { height: 100%; }
 
 .span5.span-maxi {
   width: 440px;
-
 }
+
+
