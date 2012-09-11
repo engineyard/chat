@@ -1,4 +1,4 @@
-@footer-height: 130px;
+@footer-height: 140px;
 @sky-gradient-color: #d0e9f2;
 
 //- So sticky footer works
@@ -23,6 +23,7 @@ html, body { height: 100%; }
 #header {
   background: transparent;
   height: 100px;
+  padding-bottom: 24px;
   .logo {
     margin: 20px auto;
   }
@@ -47,7 +48,7 @@ html, body { height: 100%; }
   -webkit-box-shadow:  0px 3px 25px 1px rgba(0, 0, 0, .1);
   box-shadow:  0px 3px 25px 1px rgba(0, 0, 0, .1);
   .border-radius(8px);
-  min-height: 350px;
+  min-height: 300px;
 }
 
 // Link to invite others to chat
@@ -76,7 +77,7 @@ html, body { height: 100%; }
   background-color: @blueGrey;
   .prompt {
     img {
-      margin: 29px 0 0 76px;
+      margin: 29px 0 0 54px;
     }
   }
   form {
@@ -130,14 +131,22 @@ html, body { height: 100%; }
 
 #footer {
   background: transparent;
+  .container {
+    padding-top: 24px;
+    padding-left: 24px;
+  }
   .logo {
-    margin-top: 16px;
+    position: relative;
+    left: 24px;
+  }
+  .footernav {
+    margin-left: 62px;
   }
   .row.footernav-1 {
-    margin-top: 35px;
+    margin-top: 24px;
   }
   .row.footernav-2 {
-    margin-top: 10px;
+    margin-top: 8px;
   }
 }
 
