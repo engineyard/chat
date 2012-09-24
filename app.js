@@ -14,7 +14,15 @@ var express = require('express')
   , pub = redis.createClient()
   , sub = redis.createClient()
   , redisClient = redis.createClient()
+  , fs = require('fs')
   , chat = require('./chat');
+
+if ( fs.existsSync('../../shared/no-websockets.txt') ) {
+  io.configure(function () {
+    io.set("transports", ["xhr-polling"]);
+    io.set("polling duration", 10);
+  });
+}
 
 io.set('store', new RedisStore({
   redisPub : pub
