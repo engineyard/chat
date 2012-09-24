@@ -10,5 +10,6 @@ lib-cov
 pids
 logs
 results
-
+public/js/*.js
+public/css/*.css
 npm-debug.log

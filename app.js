@@ -36,7 +36,7 @@ app.configure(function(){
   app.use(express.cookieParser());
   app.use(CookieStore({ secret: app.set('session-secret') }));
   app.use(express.static(__dirname + '/public'));
-  app.use(asset());
+  app.use(asset({buildDir: 'public'}));
 });
 
 app.configure('development', function(){
