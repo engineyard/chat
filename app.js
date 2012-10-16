@@ -11,9 +11,10 @@ var express = require('express')
   , RedisStore = require('socket.io/lib/stores/redis')
   , redis = require('redis')
   , redisHost = (process.env.DB_HOST || 'localhost')
-  , pub = redis.createClient()
-  , sub = redis.createClient()
-  , redisClient = redis.createClient()
+  , redisPort = (process.env.DB_PORT || '6379')
+  , pub = redis.createClient(redisPort, redisHost)
+  , sub = redis.createClient(redisPort, redisHost)
+  , redisClient = redis.createClient(redisPort, redisHost)
   , fs = require('fs')
   , chat = require('./chat');
 
