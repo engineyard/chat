@@ -1,0 +1,5 @@
+environments: 
+  production: 
+   copy_exclude: 
+   - .git
+   precompile_assets: false
