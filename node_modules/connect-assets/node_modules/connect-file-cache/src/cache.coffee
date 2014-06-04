@@ -61,7 +61,7 @@ class ConnectFileCache
       contentDisposition = 'attachment; filename="' + filename + '"'
       res.setHeader 'Content-Disposition', contentDisposition
 
-    if cacheHash.gzippedData and req.headers['accept-encoding']?.indexOf /gzip/
+    if cacheHash.gzippedData and req.headers['accept-encoding']?.match /gzip/
       res.setHeader 'Content-Encoding', 'gzip'
       res.setHeader 'Content-Length', cacheHash.gzippedData.length
       res.end cacheHash.gzippedData
