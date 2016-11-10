@@ -8,13 +8,7 @@ var express = require('express')
   , CookieStore = require('cookie-sessions')
   , asset = require('connect-assets')
   , io = require('socket.io').listen(app)
-  , RedisStore = require('socket.io/lib/stores/redis')
-  , redis = require('redis')
-  , redisHost = (process.env.DB_HOST || 'localhost')
-  , redisPort = (process.env.DB_PORT || '6379')
-  , pub = redis.createClient(redisPort, redisHost)
-  , sub = redis.createClient(redisPort, redisHost)
-  , redisClient = redis.createClient(redisPort, redisHost)
+  , MemoryStore = require('socket.io/lib/stores/memory')
   , fs = require('fs')
   , chat = require('./chat');
 
@@ -25,11 +19,8 @@ if ( fs.existsSync('../../shared/no-websockets.txt') ) {
   });
 }
 
-io.set('store', new RedisStore({
-  redisPub : pub
-, redisSub : sub
-, redisClient : redisClient
-}));
+io.set('store', new MemoryStore());
+
 
 module.exports = app
 
