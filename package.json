@@ -6,10 +6,10 @@
     "node": "4.4.5"
   },
   "dependencies": {
-    "express": "2.x.x",
+    "express": "^4.12.4",
     "jade": "0.x.x",
     "less": "1.x.x",
-    "socket.io": "0.9.x",
+    "socket.io": "^1.4.8",
     "connect-assets": "~2.x.x",
     "express-namespace": "~0.1.x",
     "cookie-sessions": "0.0.x",
