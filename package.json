@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "engines": {
-    "node": "4.2.1"
+    "node": "4.7.3"
   },
   "dependencies": {
     "express": "2.x.x",
